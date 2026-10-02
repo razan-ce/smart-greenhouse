@@ -1,0 +1,273 @@
+/* Greenhouse Planner — new standalone page. Same design tokens as
+   predict-page.css (green #22C55E/#16A34A, 24px radius, white glass
+   panels, border #E5E7EB, text #111827/#6B7280/#9CA3AF). Self-contained:
+   does not reuse or modify any .pd-* rules. */
+
+.gp-crumbs { display: flex; align-items: center; gap: 4px; font-size: 0.76rem; font-weight: 600; color: #9CA3AF; margin-bottom: 6px; }
+.gp-crumbs a { color: #9CA3AF; text-decoration: none; }
+.gp-crumbs a:hover { color: #16A34A; }
+.gp-crumbs i { width: 12px; height: 12px; }
+.gp-crumbs span { color: #111827; }
+
+.gp-status-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 14px; border-radius: 999px;
+  background: #F0FDF4; color: #16A34A; border: 1px solid rgba(34,197,94,0.25);
+  font-size: 0.78rem; font-weight: 700;
+}
+.gp-status-pill i { width: 15px; height: 15px; }
+.gp-status-pill-muted { background: #F3F4F6; color: #6B7280; border-color: #E5E7EB; }
+
+/* ---------- Generic panel ---------- */
+.gp-panel {
+  border-radius: 24px; background: #fff; border: 1px solid #E5E7EB;
+  box-shadow: 0 2px 8px rgba(17,24,39,0.04), 0 8px 24px rgba(17,24,39,0.06);
+  padding: 20px; display: flex; flex-direction: column;
+}
+.gp-panel-title { font-size: 1.08rem; font-weight: 700; color: #111827; letter-spacing: -0.01em; margin: 0 0 3px; }
+.gp-panel-sub { font-size: 0.78rem; color: #9CA3AF; margin: 0 0 16px; }
+
+/* ---------- Stat bar ---------- */
+.gp-stat-bar {
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px;
+}
+@media (max-width: 639px) { .gp-stat-bar { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+.gp-stat {
+  border-radius: 18px; background: #fff; border: 1px solid #E5E7EB;
+  box-shadow: 0 2px 8px rgba(17,24,39,0.04);
+  padding: 14px 16px;
+}
+.gp-stat-head { display: flex; align-items: center; gap: 6px; font-size: 0.7rem; font-weight: 600; color: #9CA3AF; margin-bottom: 6px; }
+.gp-stat-head i { width: 14px; height: 14px; color: #16A34A; }
+.gp-stat-value { font-size: 1.15rem; font-weight: 700; color: #111827; letter-spacing: -0.01em; }
+.gp-stat-wide { grid-column: span 1; }
+
+.gp-bar { height: 6px; border-radius: 999px; background: #F3F4F6; margin-top: 8px; overflow: hidden; }
+.gp-bar-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, #4ADE80, #16A34A); transition: width 0.35s ease; }
+
+/* ---------- Workspace layout ----------
+   Two columns: a fixed vegetable panel, and a flexible stage column that
+   groups the 3D view with its own toolbar directly underneath — keeps
+   "the greenhouse and its controls" reading as one unit instead of a
+   third orphaned strip squeezed down the side. */
+.gp-workspace { display: grid; grid-template-columns: 340px minmax(0, 1fr); gap: 20px; align-items: start; }
+@media (max-width: 1279px) { .gp-workspace { grid-template-columns: minmax(0, 1fr); } }
+
+.gp-veg-panel { max-height: 680px; padding: 18px; }
+
+.gp-field-group-title {
+  font-size: 0.68rem; font-weight: 700; color: #9CA3AF;
+  text-transform: uppercase; letter-spacing: 0.04em; margin: 0 0 8px;
+}
+
+.gp-seg {
+  display: flex; gap: 3px; padding: 4px; margin-bottom: 14px;
+  border-radius: 13px; background: #F3F4F6;
+}
+.gp-seg-btn {
+  flex: 1; padding: 9px 8px; border-radius: 10px; border: none; background: transparent;
+  font-size: 0.78rem; font-weight: 600; color: #6B7280; cursor: pointer;
+  transition: background 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
+}
+.gp-seg-btn:hover { color: #111827; }
+.gp-seg-btn.is-active { background: #fff; color: #16A34A; box-shadow: 0 1px 4px rgba(17,24,39,0.1); }
+
+.gp-sensor-row { display: flex; gap: 10px; margin-bottom: 14px; }
+.gp-sensor-chip {
+  flex: 1; display: flex; align-items: center; justify-content: center; gap: 7px;
+  height: 40px; border-radius: 11px; background: #F0FDF4; border: 1px solid rgba(34,197,94,0.18);
+  font-size: 0.8rem; font-weight: 700; color: #16A34A;
+}
+.gp-sensor-chip i { width: 15px; height: 15px; }
+.gp-sensor-row.is-live .gp-sensor-chip { background: #ECFDF5; border-color: rgba(34,197,94,0.35); }
+
+.gp-sensor-caption {
+  display: flex; align-items: center; gap: 5px; margin: -6px 0 14px; font-size: 0.68rem; color: #9CA3AF;
+}
+.gp-sensor-caption i { width: 11px; height: 11px; flex-shrink: 0; }
+.gp-sensor-caption a { color: #16A34A; font-weight: 600; text-decoration: none; }
+.gp-sensor-caption a:hover { text-decoration: underline; }
+
+.gp-search {
+  display: flex; align-items: center; gap: 9px; height: 46px; padding: 0 14px; margin-bottom: 14px;
+  border-radius: 13px; border: 1px solid #E5E7EB; background: #F9FAFB;
+  transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+.gp-search:focus-within { border-color: rgba(34,197,94,0.5); background: #fff; box-shadow: 0 0 0 3px rgba(34,197,94,0.12); }
+.gp-search i { width: 16px; height: 16px; color: #9CA3AF; flex-shrink: 0; }
+.gp-search input { flex: 1; border: none; background: transparent; outline: none; font-size: 0.88rem; font-weight: 500; color: #111827; }
+.gp-search input::placeholder { color: #9CA3AF; }
+
+.gp-veg-list { display: flex; flex-direction: column; gap: 7px; overflow-y: auto; max-height: 400px; padding-right: 4px; margin-right: -4px; margin-bottom: 14px; }
+.gp-veg-list::-webkit-scrollbar { width: 4px; }
+.gp-veg-list::-webkit-scrollbar-thumb { background: #E5E7EB; border-radius: 4px; }
+
+.gp-veg-row {
+  display: flex; align-items: center; gap: 12px; padding: 11px 13px;
+  border-radius: 15px; border: 1px solid #E5E7EB; background: #fff;
+  cursor: grab; text-align: left; transition: background 0.18s ease, border-color 0.18s ease, transform 0.12s ease, box-shadow 0.18s ease;
+}
+.gp-veg-row:hover { background: #F9FAFB; box-shadow: 0 4px 14px rgba(17,24,39,0.06); }
+.gp-veg-row:active { transform: scale(0.98); cursor: grabbing; }
+.gp-veg-row.is-armed { background: #F0FDF4; border-color: #16A34A; box-shadow: 0 0 0 3px rgba(34,197,94,0.12); }
+
+.gp-veg-emoji {
+  width: 38px; height: 38px; border-radius: 11px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; font-size: 1.2rem;
+  background: #F0FDF4; border: 1.5px solid rgba(34,197,94,0.35);
+}
+.gp-veg-info { flex: 1; min-width: 0; }
+.gp-veg-name { font-size: 0.86rem; font-weight: 700; color: #111827; }
+.gp-veg-meta { font-size: 0.7rem; color: #9CA3AF; margin-top: 2px; line-height: 1.4; }
+.gp-veg-suit { font-size: 0.82rem; font-weight: 700; color: #16A34A; flex-shrink: 0; }
+.gp-veg-offseason {
+  display: inline-block; margin-left: 4px; padding: 1px 7px; border-radius: 999px;
+  background: #FEF2F2; color: #DC2626; font-size: 0.62rem; font-weight: 700; text-transform: uppercase;
+}
+.gp-veg-drag-handle { color: #D1D5DB; flex-shrink: 0; }
+.gp-veg-drag-handle i { width: 16px; height: 16px; }
+
+.gp-ai-tip {
+  display: flex; gap: 12px; padding: 16px; border-radius: 18px;
+  background: linear-gradient(135deg, #F0FDF4, #ECFDF5); border: 1px solid rgba(34,197,94,0.2);
+  margin-top: auto;
+}
+.gp-ai-tip-icon {
+  width: 34px; height: 34px; border-radius: 11px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, #22C55E, #16A34A); color: #fff;
+}
+.gp-ai-tip-icon i { width: 17px; height: 17px; }
+.gp-ai-tip-title { font-size: 0.8rem; font-weight: 700; color: #111827; margin: 0 0 3px; }
+.gp-ai-tip-text { font-size: 0.76rem; color: #6B7280; line-height: 1.45; margin: 0; }
+
+/* ---------- Stage / 3D scene ---------- */
+/* min-width: 0 everywhere down this chain — without it, the <canvas>
+   element's intrinsic pixel size (set by the renderer, e.g. 1493x1120)
+   can force its grid/flex ancestors wider than the viewport, since a
+   plain 1fr/flex track won't shrink below a replaced element's natural
+   content size by default. This is what was pushing the page into
+   horizontal scroll. */
+.gp-stage-col { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.gp-stage-panel { padding: 18px; min-width: 0; }
+.gp-stage-3d {
+  position: relative; width: 100%; min-width: 0; aspect-ratio: 16 / 10; min-height: 440px;
+  border-radius: 20px; overflow: hidden; background: linear-gradient(180deg, #EAF6EE, #F5F1E7);
+  border: 1px solid #E5E7EB; cursor: grab;
+}
+.gp-stage-3d:active { cursor: grabbing; }
+/* touch-action: none is required by OrbitControls' pointer-capture handling —
+   without it Safari can leave the canvas holding pointer capture after a
+   drag, which silently swallows every click on the rest of the page
+   (including the sidebar) until reload. */
+.gp-stage-3d canvas { width: 100%; height: 100%; max-width: 100%; display: block; touch-action: none; }
+
+.gp-grid-hint { display: flex; align-items: center; gap: 6px; font-size: 0.72rem; color: #9CA3AF; margin: 12px 2px 0; }
+.gp-grid-hint i { width: 13px; height: 13px; flex-shrink: 0; }
+
+/* ---------- Toolbar (dimensions + reset/clear), under the stage ---------- */
+.gp-toolbar-panel { flex-direction: row; align-items: flex-end; gap: 14px; padding: 16px 20px; }
+@media (max-width: 639px) { .gp-toolbar-panel { flex-wrap: wrap; } }
+
+.gp-dim-field-inline { display: flex; flex-direction: column; gap: 5px; font-size: 0.72rem; font-weight: 600; color: #6B7280; width: 92px; flex-shrink: 0; }
+.gp-dim-field-inline input {
+  height: 42px; padding: 0 12px; border-radius: 11px; border: 1px solid #E5E7EB;
+  background: #F9FAFB; font-size: 0.86rem; font-weight: 600; color: #111827; width: 100%;
+}
+.gp-dim-field-inline input:focus { outline: none; border-color: rgba(34,197,94,0.5); background: #fff; box-shadow: 0 0 0 3px rgba(34,197,94,0.12); }
+
+.gp-toolbar-spacer { flex: 1; }
+
+.gp-ctrl-btn {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  height: 42px; padding: 0 18px; border-radius: 12px; border: 1px solid #E5E7EB; background: #fff;
+  font-size: 0.82rem; font-weight: 600; color: #374151; cursor: pointer; white-space: nowrap;
+  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+}
+.gp-ctrl-btn:hover { background: #F9FAFB; }
+.gp-ctrl-btn i { width: 16px; height: 16px; }
+.gp-ctrl-btn-danger { color: #DC2626; }
+.gp-ctrl-btn-danger:hover { background: #FEF2F2; border-color: #FCA5A5; }
+
+/* ---------- AI Review + CTA ---------- */
+.gp-review-row { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 16px; align-items: stretch; }
+@media (max-width: 1023px) { .gp-review-row { grid-template-columns: minmax(0, 1fr); } }
+
+.gp-review-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 24px; }
+@media (max-width: 639px) { .gp-review-grid { grid-template-columns: minmax(0, 1fr); } }
+
+.gp-review-item { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; padding: 8px 0; }
+.gp-review-item-left { display: flex; align-items: flex-start; gap: 8px; }
+.gp-review-check {
+  width: 18px; height: 18px; border-radius: 50%; flex-shrink: 0; margin-top: 1px;
+  display: flex; align-items: center; justify-content: center;
+  background: #F0FDF4; color: #16A34A;
+}
+.gp-review-check.is-warn { background: #FEF2F2; color: #DC2626; }
+.gp-review-check i { width: 11px; height: 11px; }
+.gp-review-label { font-size: 0.82rem; font-weight: 600; color: #111827; }
+.gp-review-detail { font-size: 0.72rem; color: #9CA3AF; margin-top: 1px; }
+.gp-review-badge { font-size: 0.76rem; font-weight: 700; color: #16A34A; background: #F0FDF4; padding: 4px 10px; border-radius: 999px; white-space: nowrap; }
+.gp-review-badge.is-warn { color: #DC2626; background: #FEF2F2; }
+
+.gp-cta-card {
+  border-radius: 24px; padding: 22px; display: flex; flex-direction: column; gap: 14px;
+  background: linear-gradient(155deg, #0F3D26, #0B2E1E);
+  box-shadow: 0 12px 32px rgba(11,46,30,0.35);
+  color: #fff; justify-content: space-between;
+}
+.gp-cta-icon {
+  width: 40px; height: 40px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(255,255,255,0.12); color: #4ADE80;
+}
+.gp-cta-icon i { width: 20px; height: 20px; }
+.gp-cta-body h3 { font-size: 1.02rem; font-weight: 700; margin: 0 0 4px; }
+.gp-cta-body p { font-size: 0.78rem; color: rgba(255,255,255,0.65); line-height: 1.45; margin: 0; }
+.gp-cta-btn {
+  align-self: flex-start; width: 44px; height: 44px; border-radius: 14px; border: none;
+  display: flex; align-items: center; justify-content: center;
+  background: #22C55E; color: #fff; cursor: pointer;
+  transition: background 0.18s ease, transform 0.12s ease;
+}
+.gp-cta-btn:hover { background: #16A34A; }
+.gp-cta-btn:active { transform: scale(0.94); }
+.gp-cta-btn i { width: 18px; height: 18px; }
+
+/* ---------- Final plan modal ---------- */
+.gp-modal-backdrop {
+  position: fixed; inset: 0; z-index: 70; display: none; align-items: center; justify-content: center;
+  background: rgba(15,23,42,0.4); padding: 16px;
+}
+.gp-modal-backdrop.is-open { display: flex; }
+.gp-modal {
+  width: 100%; max-width: 480px; max-height: 84vh; display: flex; flex-direction: column;
+  border-radius: 24px; background: #fff; box-shadow: 0 24px 64px rgba(17,24,39,0.25);
+  overflow: hidden;
+}
+.gp-modal-head { display: flex; align-items: center; justify-content: space-between; padding: 18px 20px; border-bottom: 1px solid #F3F4F6; }
+.gp-modal-head h2 { font-size: 1rem; font-weight: 700; color: #111827; margin: 0; }
+.gp-modal-head button { width: 30px; height: 30px; border-radius: 10px; border: none; background: #F3F4F6; color: #6B7280; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.gp-modal-head button i { width: 15px; height: 15px; }
+.gp-modal-body { padding: 20px; overflow-y: auto; font-size: 0.84rem; color: #374151; line-height: 1.6; }
+.gp-modal-body h4 { font-size: 0.72rem; font-weight: 700; color: #9CA3AF; text-transform: uppercase; letter-spacing: 0.03em; margin: 14px 0 6px; }
+.gp-modal-body h4:first-child { margin-top: 0; }
+.gp-modal-row { display: flex; justify-content: space-between; gap: 10px; padding: 4px 0; }
+.gp-modal-row span:first-child { color: #6B7280; }
+.gp-modal-row span:last-child { font-weight: 700; color: #111827; }
+.gp-modal-actions { padding: 16px 20px; border-top: 1px solid #F3F4F6; }
+.gp-modal-print-btn {
+  width: 100%; height: 44px; border-radius: 13px; border: none;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  background: linear-gradient(135deg, #22C55E, #16A34A); color: #fff;
+  font-size: 0.84rem; font-weight: 700; cursor: pointer;
+}
+.gp-modal-print-btn i { width: 16px; height: 16px; }
+
+@media print {
+  body > *:not(#gpPlanModal) { display: none !important; }
+  .gp-modal-backdrop { position: static; background: none; padding: 0; }
+  .gp-modal { max-width: 100%; max-height: none; box-shadow: none; }
+  .gp-modal-actions { display: none; }
+}

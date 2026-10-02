@@ -1,0 +1,6 @@
+grovia/mail-config.php
+.DS_Store
+grovia/config.php
+grovia/db.php
+grovia/device-config.php
+grovia/device-control.php

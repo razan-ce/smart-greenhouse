@@ -1,0 +1,109 @@
+/* GreenHouse dashboard app-shell — ports the Next.js/Tailwind design
+   into plain CSS additions that Tailwind's CDN build can't express
+   (custom utility classes, scrollbars, one-off effects). */
+
+body.dash-body {
+  font-family: 'Inter', sans-serif;
+  background: #ffffff;
+  color: #111827;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Tailwind's CDN preflight sets an explicit display on elements like
+   video/img, which — being an author-stylesheet rule — beats the
+   browser's built-in [hidden]{display:none} regardless of specificity
+   (author origin always outranks user-agent origin in the cascade). Any
+   element that has both the hidden attribute and a Tailwind class
+   setting display stays visible. This makes hidden actually win, which
+   the Face ID camera panel's JS relies on when toggling .hidden. */
+[hidden] { display: none !important; }
+
+.glass {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+}
+
+.glass-strong {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(24px) saturate(200%);
+  -webkit-backdrop-filter: blur(24px) saturate(200%);
+}
+
+.custom-scroll::-webkit-scrollbar { width: 6px; }
+.custom-scroll::-webkit-scrollbar-track { background: transparent; }
+.custom-scroll::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 999px; }
+.custom-scroll::-webkit-scrollbar-thumb:hover { background: #d1d5db; }
+
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* ---------- Keyframes ---------- */
+@keyframes dashFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+@keyframes dashFloatSmall {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+@keyframes dashPulseRing {
+  0% { transform: scale(0.9); opacity: 0.6; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+@keyframes dashSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+@keyframes dashRingPulse {
+  0%, 100% { transform: scale(1); opacity: 0.6; }
+  50% { transform: scale(1.08); opacity: 0.2; }
+}
+
+.animate-dash-float { animation: dashFloat 6s ease-in-out infinite; }
+.animate-dash-float-sm { animation: dashFloatSmall 6s ease-in-out infinite 0.3s; }
+.animate-dash-spin-slow { animation: dashSpin 3s linear infinite; }
+
+.pulse-dot { position: relative; }
+.pulse-dot::before {
+  content: '';
+  position: absolute; inset: 0; border-radius: 999px;
+  background: currentColor;
+  animation: dashPulseRing 2.2s cubic-bezier(0.4,0,0.6,1) infinite;
+}
+
+.radar-ring { animation: dashRingPulse 3s ease-in-out infinite; }
+.radar-ring:nth-child(2) { animation-delay: 0.3s; }
+.radar-ring:nth-child(3) { animation-delay: 0.6s; }
+
+/* Sidebar active nav pill transition */
+.nav-pill {
+  transition: opacity 0.25s ease;
+}
+
+/* Mobile drawer */
+.dash-drawer {
+  transform: translateX(-100%);
+  transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.dash-drawer.open { transform: translateX(0); }
+
+.dash-backdrop {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.28s ease;
+}
+.dash-backdrop.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Circular progress rings: JS sets --pct and stroke-dashoffset transitions */
+.ring-progress {
+  transition: stroke-dashoffset 1.1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* kbd hint in search field */
+.kbd-hint {
+  font-family: ui-monospace, monospace;
+}
